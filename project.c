@@ -6,23 +6,23 @@
 struct _finddata_t fd;
 int isFileOrDir();
 int findkey(char file_path[],char data[],int t);
-char buf[BUFSIZ]; 
+char buf[BUFSIZ];
 FILE *rfp,*wfp;
 void FileSearch(char file_path[])
 {
-	
+
 	char buf[BUFSIZ];
 	char data[BUFSIZ];
 	scanf("%s",data);//check,temporary
-	
+
 	int i=0,check=0,t=0;
     intptr_t handle;
     char file_path2[_MAX_PATH];
- 
+
     strcat(file_path, "\\");
     strcpy(file_path2, file_path);
     strcat(file_path, "*");
- 
+
     if ((handle = _findfirst(file_path, &fd)) == -1)
     {
         printf("No such file or directory\n");
@@ -36,7 +36,7 @@ void FileSearch(char file_path[])
         check = isFileOrDir();    //file or dir
         if (check == 0 && fd.name[0] != '.')
         {
-            FileSearch(file_pt);    //ÇÏÀ§ µð·ºÅä¸® °Ë»ö Àç±ÍÇÔ¼ö
+            FileSearch(file_pt);    //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ä¸® ï¿½Ë»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½
         }
         else if (check == 1 && fd.size != 0 && fd.name[0] != '.')
         //if (check == 1 && fd.size != 0 && fd.name[0] != '.')
@@ -45,19 +45,21 @@ void FileSearch(char file_path[])
             printf("file name : %s, size:%d\n", file_pt, fd.size);
             char *ptr1 = strstr(file_pt, ".c");
             char *ptr2 = strstr(file_pt, ".txt");
+            char savefilepath[BUFSIZ];
             //printf("%s",fd.name); //filename
-			int yun;	
+			int yun;
 			if(ptr1){
-				t=1;	
+				t=1;
 				if(yun=findkey(file_pt,data,t)){
-					wfp = fopen("C:\\Users\\Ä«¸£\\Desktop\\new\\save\\hh.c", "w+");
-					if ((rfp = fopen(file_pt, "r"))== NULL){  
-						perror("error"); 
-						exit(1);  
+					sprintf(savefilepath,"c:\\save\\%s",fd.name);
+					wfp = fopen(savefilepath, "w+");
+					if ((rfp = fopen(file_pt, "r"))== NULL){
+						perror("error");
+						exit(1);
 					}
 					while(fgets(buf,BUFSIZ,rfp)!=NULL){
 						fputs(buf,wfp);
-						//printf("correct");
+						//sprintf("correct");
 					}
 					fclose(wfp);
 				}
@@ -66,7 +68,7 @@ void FileSearch(char file_path[])
 				t=2;
 				if(yun=findkey(file_pt,data,t)){
 					printf("correct");
-				}	
+				}
 			}
 			printf("\n\n");
 		}
@@ -76,11 +78,13 @@ void FileSearch(char file_path[])
 }
 int main()
 {
-    char file_path[_MAX_PATH] = "C:\\Users\\Ä«¸£\\Desktop\\new";    //C:\ path
+    char file_path[_MAX_PATH] = "C:\\Users\\Ä«¸£\\Desktop\\try";    //C:\ path
+	system("mkdir C:\\save");
+		
     FileSearch(file_path);
     int n;
     while(1) //check,temporary
-    scanf("%d",n);//check,temporary
+    scanf("%d",n);//check
     return 0;
 }
 int isFileOrDir()
@@ -92,9 +96,9 @@ int isFileOrDir()
 }
 int findkey(char file_pt[],char data[],int t){
 	int truefalse=-1;
-	if ((rfp = fopen(file_pt, "r")) == NULL){ //path 
-		perror("error"); 
-		exit(1);  
+	if ((rfp = fopen(file_pt, "r")) == NULL){ //path
+		perror("error");
+		exit(1);
 	}
 	while(fgets(buf,BUFSIZ,rfp)!=NULL){
 		char *ptr3=strstr(buf,data);
@@ -108,5 +112,5 @@ int findkey(char file_pt[],char data[],int t){
 		}
 	}
 	return 0;
-	
+
 }
