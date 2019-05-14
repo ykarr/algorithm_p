@@ -45,19 +45,19 @@ void FileSearch(char file_path[])
             printf("file name : %s, size:%d\n", file_pt, fd.size);
             char *ptr1 = strstr(file_pt, ".c");
             char *ptr2 = strstr(file_pt, ".txt");
-            
+            //printf("%s",fd.name); //filename
 			int yun;	
 			if(ptr1){
 				t=1;	
 				if(yun=findkey(file_pt,data,t)){
-					wfp = fopen("C:\\Users\\카르\\Desktop\\new\\save\\hh.c", "w");
+					wfp = fopen("C:\\Users\\카르\\Desktop\\new\\save\\hh.c", "w+");
 					if ((rfp = fopen(file_pt, "r"))== NULL){  
 						perror("error"); 
 						exit(1);  
 					}
 					while(fgets(buf,BUFSIZ,rfp)!=NULL){
 						fputs(buf,wfp);
-						printf("correct");
+						//printf("correct");
 					}
 					fclose(wfp);
 				}
@@ -92,7 +92,7 @@ int isFileOrDir()
 }
 int findkey(char file_pt[],char data[],int t){
 	int truefalse=-1;
-	if ((rfp = fopen(file_pt, "r")) == NULL){  
+	if ((rfp = fopen(file_pt, "r")) == NULL){ //path 
 		perror("error"); 
 		exit(1);  
 	}
