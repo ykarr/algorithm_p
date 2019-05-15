@@ -145,22 +145,14 @@ char *encoding(char *dest, char *src) //caesar cipher Encoding
     char *origin;
     for (origin = dest; *src; dest++, src++)//종료 문자를 만날 때까지 반복
     {
-        if (isupper(*src))//capital letter
-        {
-            *dest = (*src - 'A' + 8) % 26 + 'A';//8push 
-        }
-        if (islower(*src))//small letter
-        {
-            *dest = (*src - 'a' + 13) % 26 + 'a';//13push
-        }
-        if (isdigit(*src))//num
-        {
-            *dest = (*src - '0' + 4) % 10 + '0';//4push
-        }
-        if (isalnum(*src) == 0)
-        {
-            *dest = *src;
-        }
+        if (isupper(*src))//capital letter        
+            *dest = (*src - 'A' + 8) % 26 + 'A';//8push        
+        if (islower(*src))//small letter       
+            *dest = (*src - 'a' + 13) % 26 + 'a';//13push       
+        if (isdigit(*src))//num     
+            *dest = (*src - '0' + 4) % 10 + '0';//4push       
+        if (isalnum(*src) == 0)     
+            *dest = *src;      
     }
     *dest = '\0';
     return origin;
@@ -170,22 +162,14 @@ char *decoding(char *dest, char *en) //decoding
     char *origin;
     for (origin = dest; *en; dest++, en++)//종료 문자를 만날 때까지 반복
     {
-        if (isupper(*en))//capital letter
-        {
-            *dest = (*en - 'A' + 18) % 26 + 'A';//18push
-        }
-        if (islower(*en))//small letter
-        {
-            *dest = (*en - 'a' + 13) % 26 + 'a';//13push
-        }
-        if (isdigit(*en))//num
-        {
-            *dest = (*en - '0' + 6) % 10 + '0';//6push
-        }
-        if (isalnum(*en) == 0)
-        {
+        if (isupper(*en))//capital letter        
+            *dest = (*en - 'A' + 18) % 26 + 'A';//18push      
+        if (islower(*en))//small letter    
+            *dest = (*en - 'a' + 13) % 26 + 'a';//13push    
+        if (isdigit(*en))//num      
+            *dest = (*en - '0' + 6) % 10 + '0';//6push    
+        if (isalnum(*en) == 0)      
             *dest = *en;
-        }
     }
     *dest = '\0';
     return origin;
