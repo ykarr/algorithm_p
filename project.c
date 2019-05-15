@@ -6,7 +6,11 @@
 struct _finddata_t fd;
 int isFileOrDir();
 int findkey(char file_path[],char data[],int t);
-int encode(char text[]);
+
+char *encoding(char *dest, char *src);
+char *decoding(char *dest, char *enstr);
+
+int encodestart(char text[]);
 char buf[BUFSIZ];
 FILE *rfp,*wfp;
 void FileSearch(char file_path[])
@@ -61,24 +65,10 @@ void FileSearch(char file_path[])
 						perror("error");
 						exit(1);
 					}
-					while(fgets(buf,BUFSIZ,rfp)!=NULL){
-						encode(buf);
-					//	fputs(buf,wfp);
-					//	sprintf("correct");
+					while(fgets(buf,BUFSIZ,rfp)!=NULL){//인코딩 부 분 
+						encodestart(buf);
 					}
-//					for(i=0;i<j;i++)
-//						fprintf(wfp,"%d\n",buf);
-					//while((bbb=fgetc(rfp))!=EOF){
 						
-					//	fprintf(wfp,"%d",bbb);
-						//sprintf("correct");
-					//}
-//					while((bbb=fgetc(rfp))!=EOF){
-//						char text[]=bbb;
-//						printf(wfp,"%c",bbb);
-//						//sprintf("correct");
-//					}
-					
 					fclose(wfp);
 				}
 			}
@@ -96,7 +86,9 @@ void FileSearch(char file_path[])
 }
 int main()
 {
-    char file_path[_MAX_PATH] = "C:\\Users\\카르\\Desktop\\try";    //C:\ path
+	
+    //char file_path[_MAX_PATH] = "C:\\Users\\카르\\Desktop\\try";    //C:\ path
+	char file_path[_MAX_PATH] = "C:\\Users\\카르\\Desktop\\new";
 	system("mkdir C:\\save");
     FileSearch(file_path);
     int n;
@@ -131,15 +123,74 @@ int findkey(char file_pt[],char data[],int t){
 	return 0;
 
 }
-int encode(char text[]){
-	//fputs(buf,wfp);
-	int i=0;
-	int bf;
-	for(i=0;i<strlen(text)+1;i++){
-		bf=(int)text[i];
-		bf=bf+1;
-		text[i]=(char)bf;
-		printf("%c",text[i]);
+int encodestart(char source[]){ //name change
+    char en[100];
+    char de[100];
+ 	int i=0;
+    //printf("source: %s\n", source);
+    encoding(en, source);//Encoding
+    for(i=0;i<strlen(en);i++){
+		printf("%d ",en[i]);
 	}
 	printf("\n");
+    //printf("%s",en); //Encoding print 
+    decoding(de, en); //decoding
+    printf("%s", de); //decoding print
+ 	printf("\n");
+    return 0;
 }
+
+char *encoding(char *dest, char *src) //caesar cipher Encoding
+{
+    char *origin;
+    for (origin = dest; *src; dest++, src++)//종료 문자를 만날 때까지 반복
+    {
+        if (isupper(*src))//capital letter
+        {
+            *dest = (*src - 'A' + 8) % 26 + 'A';//8push 
+        }
+        if (islower(*src))//small letter
+        {
+            *dest = (*src - 'a' + 13) % 26 + 'a';//13push
+        }
+        if (isdigit(*src))//num
+        {
+            *dest = (*src - '0' + 4) % 10 + '0';//4push
+        }
+        if (isalnum(*src) == 0)
+        {
+            *dest = *src;
+        }
+    }
+    *dest = '\0';
+    return origin;
+}
+char *decoding(char *dest, char *en) //decoding  
+{
+    char *origin;
+    for (origin = dest; *en; dest++, en++)//종료 문자를 만날 때까지 반복
+    {
+        if (isupper(*en))//capital letter
+        {
+            *dest = (*en - 'A' + 18) % 26 + 'A';//18push
+        }
+        if (islower(*en))//small letter
+        {
+            *dest = (*en - 'a' + 13) % 26 + 'a';//13push
+        }
+        if (isdigit(*en))//num
+        {
+            *dest = (*en - '0' + 6) % 10 + '0';//6push
+        }
+        if (isalnum(*en) == 0)
+        {
+            *dest = *en;
+        }
+    }
+    *dest = '\0';
+    return origin;
+
+}
+
+
+	   
