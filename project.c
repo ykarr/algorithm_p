@@ -129,13 +129,13 @@ int encodestart(char source[]){ //name change
  	int i=0;
     //printf("source: %s\n", source);
     encoding(en, source);//Encoding
-    for(i=0;i<strlen(en);i++){
-		printf("%d ",en[i]);
-	}
+//    for(i=0;i<strlen(en);i++){
+//		printf("%d ",en[i]);
+//	}
 	printf("\n");
     //printf("%s",en); //Encoding print 
     decoding(de, en); //decoding
-    printf("%s", de); //decoding print
+    //printf("%s", de); //decoding print
  	printf("\n");
     return 0;
 }
