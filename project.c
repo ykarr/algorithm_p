@@ -3,6 +3,8 @@
 #include <string.h>
 #include <io.h>
 #include <Windows.h>
+#define PATHSIZE 50
+
 struct _finddata_t fd;
 int isFileOrDir();
 int findkey(char file_path[],char data[],int t);
@@ -10,17 +12,20 @@ int findkey(char file_path[],char data[],int t);
 char *encoding(char *dest, char *src);
 char *decoding(char *dest, char *enstr);
 
-int encodestart(char text[]);
+int encodestart(char source[]);
+int decodestart(char source[]);
 char buf[BUFSIZ];
+char file_path[50];
+char PATH[50];
 FILE *rfp,*wfp;
 void FileSearch(char file_path[])
 {
+    char buf[BUFSIZ];
+    char data[BUFSIZ];
+    printf("what data do you want to find?\n->");
+    scanf("%s",data);//check,temporary
 
-	char buf[BUFSIZ];
-	char data[BUFSIZ];
-	scanf("%s",data);//check,temporary
-
-	int i=0,check=0,t=0;
+    int check=0,t=0;
     intptr_t handle;
     char file_path2[_MAX_PATH];
 
@@ -38,108 +43,162 @@ void FileSearch(char file_path[])
         char file_pt[_MAX_PATH];
         strcpy(file_pt, file_path2);
         strcat(file_pt, fd.name);
-        check = isFileOrDir();    //file or dir
-        if (check == 0 && fd.name[0] != '.')
-        {
-            FileSearch(file_pt);    //ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ä¸® ï¿½Ë»ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ô¼ï¿½
-        }
-        else if (check == 1 && fd.size != 0 && fd.name[0] != '.')
-        //if (check == 1 && fd.size != 0 && fd.name[0] != '.')
-		{
-			printf("----------------------------------------\n");
+        if (fd.size != 0 && fd.name[0] != '.')
+        {   
+            printf("----------------------------------------\n");
             printf("file name : %s, size:%d\n", file_pt, fd.size);
             char *ptr1 = strstr(file_pt, ".c");
             char *ptr2 = strstr(file_pt, ".txt");
             char savefilepath[BUFSIZ];
             int bbb;
-            //printf("%s",fd.name); //filename
-			int yun;
-			if(ptr1){
-				t=1;
-				int i=0,j=0;
-				char text[900];
-				if(yun=findkey(file_pt,data,t)){
-					sprintf(savefilepath,"c:\\save\\%s",fd.name);
-					wfp = fopen(savefilepath, "w+");
-					if ((rfp = fopen(file_pt, "r"))== NULL){
-						perror("error");
-						exit(1);
-					}
-					while(fgets(buf,BUFSIZ,rfp)!=NULL){//ÀÎÄÚµù ºÎ ºÐ 
-						encodestart(buf);
-					}
-						
-					fclose(wfp);
-				}
-			}
-			else if(ptr2){
-				t=2;
-				if(yun=findkey(file_pt,data,t)){
-					printf("correct");
-				}
-			}
-			printf("\n\n");
-		}
-	}
-    printf("%d",i);
+            int yun;
+            if(ptr1){
+               t=1;
+               if(yun=findkey(file_pt,data,t)){
+                     sprintf(savefilepath,"%s\\save\\%s",PATH,fd.name);
+                     wfp = fopen(savefilepath, "w+");
+                     if ((rfp = fopen(file_pt, "r"))== NULL){
+                        perror("error");
+                        exit(1);
+                     }
+                     int i=0;
+                     while(fgets(buf,BUFSIZ,rfp)!=NULL){//ÀÎÄÚµù ºÎ ºÐ 
+                        encodestart(buf);
+                           fprintf(wfp,"%s",buf);
+                        i++;
+                     }
+                  fclose(rfp);
+                   fclose(wfp);
+               }
+            }
+            else if(ptr2){
+               t=2;
+               if(yun=findkey(file_pt,data,t)){
+                  sprintf(savefilepath,"%s\\save\\%s",PATH,fd.name);
+                  wfp=fopen(savefilepath,"w+");
+                  if((rfp=fopen(file_pt,"r"))==NULL)
+                  {
+                     perror("error");
+                     exit(1);
+               }
+               while(fgets(buf,BUFSIZ,rfp)!=NULL)
+               {
+                  encodestart(buf);
+                  if(buf!=NULL);
+                     fprintf(wfp,"%s\n",buf);
+               }
+               fclose(rfp);
+               fclose(wfp);         
+               }
+            }
+            printf("\n\n");
+         }
+      
+   }
     _findclose(handle);
 }
-int main()
+int main(int argc, char* argv[])
 {
-	
-    //char file_path[_MAX_PATH] = "C:\\Users\\Ä«¸£\\Desktop\\try";    //C:\ path
-	char file_path[_MAX_PATH] = "C:\\Users\\Ä«¸£\\Desktop\\new";
-	system("mkdir C:\\save");
-    FileSearch(file_path);
-    int n;
-	while(1) //check,temporary
-    scanf("%d",n);//check
-    return 0;
-}
-int isFileOrDir()
-{
-    if (fd.attrib & _A_SUBDIR)
-        return 0; // dir==0
-    else
-        return 1; // else== It does not exist file==1
+   int n;
+    FILE *rf,*wf;   
+   char system1[PATHSIZE];
+   char system2[PATHSIZE];
+   //char file_path[_MAX_PATH] = "C:\\Users\\Ä«¸£\\Desktop\\try";    //C:\ path
+    printf("find dir path:(ex)D:\\\\algorithm))\n->");
+    scanf("%s",file_path);
+    strcpy(PATH,file_path);
+    sprintf(system1,"mkdir %s\\save",PATH);
+    sprintf(system2,"mkdir %s\\decode",PATH);
+   
+   system(system1);
+    system(system2);
+    //FileSearch(file_path);
+
+    while(1){ //check,temporary
+    
+      int select=0;
+      int j=0;
+      char decodefile[30];
+      printf("what do you want?\n-encoding:1,decoding:2,exit:default\n");
+      scanf("%d",&select);
+      char debuf[BUFSIZ];
+      char depath[BUFSIZ];
+      char path[BUFSIZ];
+      switch(select)
+      {
+         case 1:
+            FileSearch(file_path);
+            printf("Encoding is finished.\ncheck your save file\n");
+            break;
+         case 2:
+            printf("what file do you want to decode?\n");
+            scanf("%s",&decodefile);
+            sprintf(depath,"%s\\decode\\%s",PATH,decodefile);
+            sprintf(path,"%s\\save\\%s",PATH,decodefile);
+            wf=fopen(depath,"w+");
+            if((rf=fopen(path,"r"))==NULL)
+               {
+                  perror("error");
+                  exit(1);
+            }
+            while(fgets(debuf,BUFSIZ,rf)!=NULL)
+            {
+               decodestart(debuf);
+               fprintf(wf,"%s",debuf);
+            }
+            fclose(rf);
+            fclose(wf);
+            printf("Decoding is finished.\ncheck your decode file\n");
+            break;
+         default:
+            printf("finished");
+            return 0;
+      }
+   }
+    return -1;
 }
 int findkey(char file_pt[],char data[],int t){
-	int truefalse=-1;
-	if ((rfp = fopen(file_pt, "r")) == NULL){ //path
-		perror("error");
-		exit(1);
-	}
-	while(fgets(buf,BUFSIZ,rfp)!=NULL){
-		char *ptr3=strstr(buf,data);
-		if(ptr3){
-			if(t==1){
-				printf("c language file: %s \n",ptr3);
-				return 1;}
-			else if(t==2){
-				printf("i am text file: %s \n",ptr3);
-				return 1;}
-		}
-	}
-	return 0;
+   int truefalse=-1;
+   if ((rfp = fopen(file_pt, "r")) == NULL){ //path
+      perror("error");
+      exit(1);
+   }
+   while(fgets(buf,BUFSIZ,rfp)!=NULL){
+      char *ptr3=strstr(buf,data);
+      if(ptr3){
+         if(t==1){
+            printf("c language file: %s",ptr3);
+            return 1;}
+         else if(t==2){
+            printf("i am text file: %s",ptr3);
+            return 1;}
+      }
+   }
+   return 0;
 
 }
 int encodestart(char source[]){ //name change
     char en[100];
-    char de[100];
- 	int i=0;
-    printf("source: %s\n", source);
-    encoding(en, source);//Encoding
-    for(i=0;i<strlen(en);i++){
-		printf("%d ",en[i]);
-	}
-	printf("\n");
-    printf("%s",en); //Encoding print 
-    decoding(de, en); //decoding
-    //printf("%s", de); //decoding print
- 	printf("\n");
+   int i=0;
+   
+    char *een=encoding(en, source);//Encoding
+    for(i=0;i<strlen(en)-1;i++){
+         source[strlen(en)-2-i]=en[i];
+    }
     return 0;
 }
-
+int decodestart(char source[])
+{
+   char de[100];
+   
+   int i=0;
+   
+   decoding(de,source);
+   for(i=0;i<strlen(de)-1;i++){
+      source[strlen(de)-2-i]=de[i];
+   }
+   return 0;
+}
 char *encoding(char *dest, char *src) //caesar cipher Encoding
 {
     char *origin;
@@ -175,6 +234,3 @@ char *decoding(char *dest, char *en) //decoding
     return origin;
 
 }
-
-
-	   
